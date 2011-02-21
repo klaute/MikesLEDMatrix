@@ -6,3 +6,7 @@ doc/USBCommunication.txt describes the USB communication protocol between host a
 doc/firmware-animation.txt describes the possible µC internal frames and animations/functions
 
 doc/udev-access-rights.txt shows up the user access configuration for the USB devices
+
+The firmware is based on the fornax LED cube V1.0,
+for more information about the project visit http://leyanda.de
+
