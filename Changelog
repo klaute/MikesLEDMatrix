@@ -1,0 +1,62 @@
+Changelog:
+
+2010-04-06:
+
+ - the playAnimation script is now able to play animations endless
+ - usbclient does now automatically send the amount of bytes which are
+   required
+
+2010-04-01:
+
+ - shinyled is now able so send the actual shown frame to the matrix
+ - it's no more required to send 64 bytes to the microcontroller in case
+   of sending single frames or commands
+
+2010-03-28:
+
+ - added equalizer support in firmware
+ - added equalizer frames (shinyLED animation file)
+ - added equalozer test tool
+
+2010-03-27:
+
+ - removed cube includes for animations, rotation, translation and the abc
+ - added equalizer files and added command options to activate it
+
+2010-03-24:
+
+ - added a interactive shell in usbclient (hidtool) 
+
+ - to fix ubuntu >= 8.4 user access rights add the following 2 lines to the file
+   /etc/udev/rules.d/8x-usbprog.rules (x is a Nimber between 0 and 9).
+
+   ATTR{idVendor}=="16c0", ATTR{idProduct}=="05dc", GROUP="plugdev", MODE="0660"
+   ATTR{idVendor}=="16c0", ATTR{idProduct}=="05df", GROUP="plugdev", MODE="0660"
+
+ - testAnimation.pl in tools added which uses the interactive shell from usbclient
+
+2010-03-11:
+
+ - Removed walking animation because of compile size probles
+ - USBMatrix test-tools added
+ - shinyLED-animation converter and optimizer added
+
+2010-02-16:
+
+Changed by klaute (Kai Lauterbach klaute at gmail.com)
+to get it work with MikesLEDMatrix. See http://klautesblog.blogspot.com/ for more details.
+
+ - USB support added (V-USB project)
+ - USB client added
+ - Animations in main loop removed
+ - Animation logic replaced
+ - Makefile replaced
+ - C99 standard for loops replaced
+
+older:
+
+fornax LED cube V1.0
+
+I used avr gcc to compile the source.
+For more information about the project visit http://leyanda.de
+

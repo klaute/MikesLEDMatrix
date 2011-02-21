@@ -1,0 +1,30 @@
+
+Firmware: 
+
+	- the firmware is able do set and recive USB HID features
+	- the maximum length of one chunk is 4 byte
+	- every feature request returns the actual 8x8 array from the AVR memory
+	- the following list describes the data which can be processed by the µC
+
+	command | data                     | description
+	----------------------------------------------------------------------------------
+	0x01    | none                     | Change program mode to "read 64 data bytes".
+	        |                          | The µC expects 64 databytes with the next
+	        |                          | SetFeature message. Those 64 bytes represents
+	        |                          | one frame (8x8 bytes).
+	0x02    | <level> <row> <databyte> | To set one row at one level.
+	0x03    | <higgbyte> <lowbyte>     | Used to set the display brightness.
+	0x04    | <animation index byte>   | Used to aktivate a µC internal animation.
+	        |                          | Animations can't be stop.
+	0x05    | <eqalizer type>          | Used to control the internal equalizer.
+	        | <equalizer level 0 - 10> | equalizer type: 0x20 or 0x21
+	        |                          | equalizer level: 0 .. 10
+
+USBClient:
+
+	- the client use the libUSB library so set and get fratures
+
+shinyLED:
+
+	- at this point there is a rudimentary support for playing animations
+

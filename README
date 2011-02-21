@@ -1,0 +1,8 @@
+
+See Changelog for changes.
+
+doc/USBCommunication.txt describes the USB communication protocol between host and microcontroller.
+
+doc/firmware-animation.txt describes the possible µC internal frames and animations/functions
+
+doc/udev-access-rights.txt shows up the user access configuration for the USB devices

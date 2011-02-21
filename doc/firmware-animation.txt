@@ -1,0 +1,20 @@
+index | option | description
+--------------------------------------------------------------
+ 1    |        | clear screen
+ 2    |        | full screen
+ 20   |        | 1st equalizer
+      |    10  | maximum amplitude - filled from the middle-version
+      |   ...  |
+      |     0  | minimal amplitude (one point in the middle)
+ 21   |        | 2nd equalizer - only one row-version
+      |    10  | maximum amplitude
+      |   ...  |
+      |     0  | minimal amplitude (one point in the middle)
+ 30   |        | add minimum amplitude ring
+      |   ...  | 
+ 40   |        | add maximum amplitude ring
+ 50   |        | remove minimum amplitude ring
+      |   ...  |
+ 60   |        | remove maximum amplitude ring
+ 200  |        | show start animation
+ 255  |        | reset the µC

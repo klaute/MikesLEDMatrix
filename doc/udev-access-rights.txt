@@ -1,0 +1,7 @@
+To fix ubuntu >= 8.4 user access rights add the following 2 lines to the file
+/etc/udev/rules.d/8x-usbprog.rules (x is a Nimber between 0 and 9).
+
+   ATTR{idVendor}=="16c0", ATTR{idProduct}=="05dc", GROUP="plugdev", MODE="0660"
+   ATTR{idVendor}=="16c0", ATTR{idProduct}=="05df", GROUP="plugdev", MODE="0660"
+
+
