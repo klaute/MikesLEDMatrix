@@ -30,7 +30,7 @@ You should have received a copy of the GNU General Public License along with thi
 #include "usbdrv.h"
 
 //#define USB_POLL_TCNT_START 40000 // ASROCK Rechner
-#define USB_POLL_TCNT_START 25000 // Notebooks
+#define USB_POLL_TCNT_START 25000 // Notebooks ohne nvidia chipsatz
 
 PROGMEM char usbHidReportDescriptor[22] = {    /* USB report descriptor */
     0x06, 0x00, 0xff,              // USAGE_PAGE (Generic Desktop)

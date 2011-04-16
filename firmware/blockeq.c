@@ -3,7 +3,7 @@
 
 #include "blockeq.h"
 
-void blockEqualizer(unsigned char blockValue)
+void blockEqualizer(uchar blockValue)
 {
 /*
 	uchar leftShiftValue;

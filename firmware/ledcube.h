@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License along with thi
 #include <stdlib.h>
 #include <avr/io.h>
 #include <inttypes.h>
+#include <usbdrv.h>
 
 /* this shouldnt be declared volatile, keep the code that way */
 uint8_t cube[8][8];
