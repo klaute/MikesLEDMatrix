@@ -4,7 +4,7 @@ cd ..
 
 DATE=`date -I | sed 'N;s/\n//'`
 
-7za -xr\!MikesLEDMatrix/Entwürfe a ~/Desktop/firmware_mikesledmatrix_$DATE.7z MikesLEDMatrix
+7za -xr\!MikesLEDMatrix/Entwuerfe a ~/Desktop/firmware_mikesledmatrix_$DATE.7z MikesLEDMatrix
 
 cd -
 
