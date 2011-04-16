@@ -1,4 +1,7 @@
 # Name: Makefile
+# Project: hid-mouse example
+# Author: Christian Starkjohann
+# Creation Date: 2008-04-07
 # Tabsize: 4
 # Copyright: (c) 2008 by OBJECTIVE DEVELOPMENT Software GmbH
 # License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
@@ -6,7 +9,7 @@
 
 #DEVICE  = atmega8
 DEVICE  = atmega32
-F_CPU   = 12000000	# in Hz
+F_CPU   = 16000000	# in Hz
 FUSE_L  = # see below for fuse values for particular devices
 FUSE_H  =
 #AVRDUDE = avrdude -c avrisp2 -p $(DEVICE) -P /dev/ttyUSB0 # edit this line for your programmer
@@ -17,8 +20,8 @@ CFLAGS += -I.
 CFLAGS += -I/home/klaute/dev/avrlib
 CFLAGS += -DDEBUG_LEVEL=0
 CFLAGS += -MD -MP -MF .dep/$(@F).d
-#OBJECTS = main.o ledcube.o animations.o ab.o rotation.o translation.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
-OBJECTS = main.o ledcube.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
+#OBJECTS = main.o ledcube.o block0.o animations.o ab.o rotation.o translation.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
+OBJECTS = main.o ledcube.o blockeq.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
 
 COMPILE  = avr-gcc
 COMPILE += -Wall
@@ -37,6 +40,8 @@ COMPILE += -mtiny-stack
 COMPILE += -mcall-prologues
 COMPILE += -mno-tablejump
 #COMPILE += -Wa,-adhlns=$(<:.c=.lst)
+
+AVRSIZE = avr-size
 
 all: program 
 #writeeep
@@ -87,7 +92,9 @@ main.elf: usbdrv $(OBJECTS)	# usbdrv dependency only needed because we copy it
 main.hex: main.elf
 	rm -f main.hex main.eep.hex
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
-	avr-size main.hex
+	$(AVRSIZE) --target=ihex main.hex
+	$(AVRSIZE) --mcu=atmega32 -C main.elf
+	$(AVRSIZE) -x *.o
 
 # debugging targets:
 

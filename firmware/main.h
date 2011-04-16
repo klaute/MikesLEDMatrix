@@ -26,10 +26,11 @@ You should have received a copy of the GNU General Public License along with thi
 #include "ab.h"
 
 #include "equalizer.h"
-
+//#include "block0.h"
 #include "usbdrv.h"
 
-#define USB_POLL_TCNT_START 25000 // An Nvidia Chipsatz nur mit USB-Hub (2.0)
+//#define USB_POLL_TCNT_START 40000 // ASROCK Rechner
+#define USB_POLL_TCNT_START 25000 // Notebooks
 
 PROGMEM char usbHidReportDescriptor[22] = {    /* USB report descriptor */
     0x06, 0x00, 0xff,              // USAGE_PAGE (Generic Desktop)
@@ -50,10 +51,9 @@ uint16_t brightness;
 static uchar    bytesRemaining;
 
 typedef struct Cont {
-	uchar mode; // 0 = Kommandomodus (Pgm Modus wird gelesen); 1 = Frame-Daten empfangen;
+        uchar                 mode; // 0 = Kommandomodus (Pgm Modus wird gelesen); 1 = Frame-Daten empfangen;
 	volatile uchar doAnimation;
 	volatile uchar eqValue;
-	volatile uchar lock; // Variable zum sperren des weireten Datenempfangs während Daten verarbeitet werden.
 } Cont_t;
 static Cont_t container;
 
