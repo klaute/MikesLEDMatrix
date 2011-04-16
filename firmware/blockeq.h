@@ -3,6 +3,6 @@
 
 #include "ledcube.h"
 
-void blockEqualizer(uchar);
+void blockEqualizer(uchar*);
 
 #endif
