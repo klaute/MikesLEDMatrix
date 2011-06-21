@@ -40,6 +40,9 @@ COMPILE += -mtiny-stack
 COMPILE += -mcall-prologues
 COMPILE += -mno-tablejump
 #COMPILE += -Wa,-adhlns=$(<:.c=.lst)
+CFLAGS += -ffunction-sections
+CFLAGS += -fdata-sections
+CFLAGS += -Wl,--gc-sections
 
 AVRSIZE = avr-size
 
