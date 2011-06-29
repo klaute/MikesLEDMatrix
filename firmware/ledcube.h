@@ -19,11 +19,12 @@ You should have received a copy of the GNU General Public License along with thi
 #include <stdlib.h>
 #include <avr/io.h>
 #include <inttypes.h>
-#include <usbdrv.h>
 
 /* this shouldnt be declared volatile, keep the code that way */
 uint8_t cube[8][8];
 /* y, x, z are the bits in x*/
+
+volatile uint16_t led_delay;
 
 void cube_show_init( void );
 

@@ -22,6 +22,9 @@ PORTD is 8 bit latch input
 */
 
 #include "main.h"
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
+
 
 /* ------------------------------------------------------------------------- */
 
@@ -31,7 +34,6 @@ int main(void)
 	_delay_ms(100);
 	_delay_ms(100);
 	start_animation();
-	// 800 ms pause
 	_delay_ms(100);
 	_delay_ms(100);
 	_delay_ms(100);
@@ -56,6 +58,7 @@ int main(void)
 				case 2 : ;
 					cube_full();
 				break;
+				
 				// Equalizer
 				case 20 : ;
 					// euqalizer1 steuerung für mehrere ringe gleichzeitig
@@ -127,25 +130,32 @@ int main(void)
 					}
 				break;
 				case 30 : ;
-					equalizer_0();
+					playAnimation = true;
+					playAnimationen(maske1, aendrung1,frames1);
 				break;
 				case 31 : ;
-					equalizer_1();
+					playAnimation = true;
+					playAnimationen(maske2, aendrung2,frames2);
 				break;
 				case 32 : ;
-					equalizer_2();
+					playAnimation = true;
+					playAnimationen(maske3, aendrung3,frames3);
 				break;
 				case 33 : ;
-					equalizer_3();
+					playAnimation = true;
+					playAnimationen(maske4, aendrung4,frames4);
 				break;
 				case 34 : ;
-					equalizer_4();
+					playAnimation = true;
+					playAnimationen(maske5, aendrung5,frames5);
 				break;
 				case 35 : ;
-					equalizer_5();
+					playAnimation = true;
+					playAnimationen(maske6, aendrung6,frames6);
 				break;
 				case 36 : ;
-					equalizer_6();
+					playAnimation = true;
+					playAnimationen(maske7, aendrung7,frames7);
 				break;
 				case 37 : ;
 					equalizer_7();
@@ -217,6 +227,8 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 		return 1;               // end of transfer
 	if(len > bytesRemaining)
 		len = bytesRemaining;
+	uchar v;
+	playAnimation = false;
 
 	switch ( container.mode )
 	{
@@ -246,6 +258,25 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 				container.eqValue = data[2]; // Stufe der Auslenkung
 				bytesRemaining = 0;
 				return 1;
+			case 6 : ; // BlockEqualizer ohne Querbalken
+				v = 0;
+				for( v = 1; v < 8; v++ )
+                                    container.blockValue[v-1] = data[v];
+				blockEqualizerBold(container.blockValue, false);
+				bytesRemaining = 0;
+				return 1;
+			case 7 : ; // BlockEqualizer mit Querbalken
+				v = 0;
+				for( v = 1; v < 8; v++ )
+                                    container.blockValue[v-1] = data[v];
+				blockEqualizerBold(container.blockValue, true);
+				bytesRemaining = 0;
+				return 1;
+			case 8 : ; // Übertragung von 24 Bytes vorbereiten 
+				container.mode = 2;
+				bytesRemaining = 0;
+				return 1;
+			
 			default : // Keine Aktion
 				bytesRemaining = 0;
 				return 1;
@@ -265,6 +296,27 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 			container.mode  = 0;
 		}
 	    break;
+	    case 2 : ; // read blockValue for blockequalizer
+		pos = ( 64 - bytesRemaining );
+		i = 0;
+		if( pos < 17 )
+		{
+			//bzero(container.blockValue, sizeof(container.blockValue));
+			memset(container.blockValue, 255, sizeof(container.blockValue));
+			for ( i = 0; i < len; i++ )
+			{
+				container.blockValue[ pos + i ] = data[i];
+			}
+			//blockEqualizer(container.blockValue);
+		}
+
+		if ( bytesRemaining == 48)
+		{
+			container.mode  = 0;
+                        bytesRemaining = 8;
+		}
+	    break;
+	    
 	}
 
 	bytesRemaining -= len;
@@ -300,6 +352,14 @@ void init(void)
 	_delay_ms(1);
 	sei();
 	_delay_ms(1);
+	qBlock[0] = 0;
+	qBlock[1] = 0;
+	qBlock[2] = 0;
+	qBlock[3] = 0;	
+	qBlock[4] = 0;
+	qBlock[5] = 0;
+	qBlock[6] = 0;
+	falldown = 1;
 }	
 
 /* ------------------------------------------------------------------------- */
@@ -355,9 +415,50 @@ ISR( TIMER1_OVF_vect )
 
 /* ------------------------------------------------------------------------- */
 
+void playAnimationen(uchar* maske_, uchar* aenderungen_, uchar frames_)
+{	
+ 	uint8_t dur = 12;
+	cube_clear();
+	frames_counter = 0;
+	frames = frames_; //sizeof(maske_) / 8;
+	unsigned int counter_aenderung = 0;
+	uchar i;
+	uchar tmpMaske;
+	while ( playAnimation )
+	{		
+		for( i = 0; i < 8; i++ )
+		{	tmpMaske = pgm_read_byte(&maske_[frames_counter * 8 + i]);
+ 
+			if(tmpMaske > 0)
+			{
+				if(tmpMaske & 1) {cube[i][0] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 2) {cube[i][1] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 4) {cube[i][2] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 8) {cube[i][3] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 16) {cube[i][4] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 32) {cube[i][5] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 64) {cube[i][6] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}
+				if(tmpMaske & 128) {cube[i][7] = pgm_read_byte(&aenderungen_[counter_aenderung]); counter_aenderung++;}	
+			}
+		}
+		frames_counter++;
+		cube_show_loop(dur);
+
+		if(frames_counter == frames) 
+		{
+			frames_counter = 0;
+			counter_aenderung = 0;	
+			cube_clear();
+		}
+				
+	}
+	cube_clear();
+}
+
+
 void start_animation(void)
 {
-	uint8_t dur = 6;
+	uint8_t dur = 12;
 	cube_clear();
 	cube_show_loop(dur);
 	cube[0][0] = 0x01;

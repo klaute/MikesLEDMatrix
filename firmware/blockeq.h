@@ -1,8 +1,15 @@
-#ifndef BLOCKEQ_H
-#define BLOCKEQ_H
+#ifndef BLOCK0_H
+#define BLOCK0_H
+
+#include <stdbool.h>
 
 #include "ledcube.h"
 
-void blockEqualizer(uchar*);
+typedef unsigned char uchar;
+
+volatile uchar qBlock[7];
+volatile uchar falldown;
+
+void blockEqualizerBold(uchar*, bool);
 
 #endif

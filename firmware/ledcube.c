@@ -39,6 +39,7 @@ void cube_show_init( void )
 // Interruptroutine
 ISR( TIMER0_OVF_vect )
 {
+
 	TCNT0 = 0xB0; // at least 0xA0
 	// cli() not neccessary atm
 	PORTC = 0x0; // Ebene abschalten
