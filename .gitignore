@@ -1,5 +1,5 @@
 pcb/*.*\#*
 Entwuerfe
 firmware/.dep
-firmware/*.lst
-firmware/*.o
+*.lst
+*.o
