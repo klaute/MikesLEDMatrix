@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with thi
 #include <inttypes.h>
 #include <util/delay.h>
 #include <math.h>
+#include <string.h>
 
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
