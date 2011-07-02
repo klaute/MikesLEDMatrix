@@ -20,6 +20,12 @@ CFLAGS += -I.
 CFLAGS += -I/home/klaute/dev/avrlib
 CFLAGS += -DDEBUG_LEVEL=0
 CFLAGS += -MD -MP -MF .dep/$(@F).d
+CFLAGS += -ffunction-sections
+CFLAGS += -fdata-sections
+CFLAGS += -Wl,--gc-sections
+
+AVRSIZE = avr-size
+
 #OBJECTS = main.o ledcube.o block0.o animations.o ab.o rotation.o translation.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
 OBJECTS = main.o ledcube.o blockeq.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
 
@@ -35,11 +41,9 @@ COMPILE += -fpack-struct
 COMPILE += -fshort-enums
 COMPILE += -fgnu89-inline
 COMPILE += -Wstrict-prototypes
-#COMPILE += -mint8
 COMPILE += -mtiny-stack
 COMPILE += -mcall-prologues
 COMPILE += -mno-tablejump
-#COMPILE += -Wa,-adhlns=$(<:.c=.lst)
 
 all: program 
 #writeeep
@@ -89,8 +93,16 @@ main.elf: usbdrv $(OBJECTS)	# usbdrv dependency only needed because we copy it
 
 main.hex: main.elf
 	rm -f main.hex main.eep.hex
+	echo
 	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
-	avr-size main.hex
+	echo
+	$(AVRSIZE) --target=ihex main.hex
+	echo
+	$(AVRSIZE) --mcu=atmega32 -C main.elf
+	echo
+	$(AVRSIZE) -x *.o
+	echo
+	$(AVRSIZE) main.hex
 
 # debugging targets:
 
