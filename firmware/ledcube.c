@@ -22,8 +22,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include <avr/interrupt.h>
 
-#include "ab.h"
-#include "rotation.h"
+//#include "ab.h"
+//#include "rotation.h"
 
 // Initialisiert den Timer0 (8Bit)
 void cube_show_init( void )

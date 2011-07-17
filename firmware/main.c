@@ -12,19 +12,8 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
-/* 
-
-PORTA is LE
-PORTB is not used
-PORTC is layer enable
-PORTD is 8 bit latch input
-
-*/
-
 #include "main.h"
-#include <avr/eeprom.h>
-#include <avr/pgmspace.h>
-
+#include "animations.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -349,11 +338,13 @@ void init(void)
 	TCNT1 = USB_POLL_TCNT_START;
 	TIMSK |= (1 << TOIE1);
 
-	// USB Poll with Timer2 (16Bit)
-	TCCR2A = 0x00;
-	TCCR2B = (1 << CS20); // prescale = 0
-	TCNT2 = USB_POLL_TCNT_START;
-	TIMSK |= (1 << TOIE2);
+	// Timer2 (8Bit)
+	TCCR2  = 0x00;
+	TCCR2 |= (1 << WGM21); // CTC
+	TCCR2 |= (1 << CS22) | (1 << CS01); // prescale = 1024
+	TCNT2 = 1;
+    OCR2 = 125; // Ergibt genau 0,008 Sekunden
+	TIMSK |= (1 << OCIE2);
 
 	_delay_ms(1);
 	sei();
@@ -421,9 +412,20 @@ ISR( TIMER1_OVF_vect )
 
 /* ------------------------------------------------------------------------- */
 // Interruptroutine
-ISR( TIMER2_OVF_vect )
+ISR( TIMER2_COMP_vect )
 {
-    
+    if (seconds_timer_cnt >= 125)
+    {
+        seconds_timer_cnt = 0;
+
+        // Start the action which should be triggered every second.
+        if (cube[0][0] == 0x00) {
+            cube[0][0] = 0x12;
+        } else {
+            cube[0][0] = 0x00;
+        }
+
+    }
 }
 
 /* ------------------------------------------------------------------------- */
