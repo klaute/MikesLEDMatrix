@@ -283,39 +283,39 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 		}
 	    break;
 	    case 1 : ; // read one frame (chunk of 64 byte)
-		uint8_t pos = ( 64 - bytesRemaining );
+		    uint8_t pos = ( 64 - bytesRemaining );
 	
-		uchar i = 0;
-		for ( i = 0; i < len; i++ )
-		{
-			cube[ (pos/8) ][ i ] = data[i];
-		}
+    		uchar i = 0;
+    		for ( i = 0; i < len; i++ )
+    		{
+    			cube[ (pos/8) ][ i ] = data[i];
+    		}
 
-		if ( bytesRemaining == 8 )
-		{
-			container.mode  = 0;
-		}
-	    break;
-	    case 2 : ; // read blockValue for blockequalizer
-		pos = ( 64 - bytesRemaining );
-		i = 0;
-		if( pos < 17 )
-		{
-			//bzero(container.blockValue, sizeof(container.blockValue));
-			memset(container.blockValue, 255, sizeof(container.blockValue));
-			for ( i = 0; i < len; i++ )
-			{
-				container.blockValue[ pos + i ] = data[i];
-			}
-			//blockEqualizer(container.blockValue);
-		}
+	    	if ( bytesRemaining == 8 )
+    		{
+    			container.mode  = 0;
+    		}
+    	    break;
+        case 2 : ; // read blockValue for blockequalizer
+		    pos = ( 64 - bytesRemaining );
+    		i = 0;
+    		if( pos < 17 )
+    		{
+    			//bzero(container.blockValue, sizeof(container.blockValue));
+    			memset(container.blockValue, 255, sizeof(container.blockValue));
+    			for ( i = 0; i < len; i++ )
+    			{
+    				container.blockValue[ pos + i ] = data[i];
+    			}
+    			//blockEqualizer(container.blockValue);
+    		}
 
-		if ( bytesRemaining == 48)
-		{
-			container.mode  = 0;
-                        bytesRemaining = 8;
-		}
-	    break;
+    		if ( bytesRemaining == 48)
+    		{
+    			container.mode  = 0;
+                bytesRemaining = 8;
+	    	}
+	        break;
 	    
 	}
 
@@ -348,6 +348,12 @@ void init(void)
 	TCCR1B = (1 << CS10); // prescale = 0
 	TCNT1 = USB_POLL_TCNT_START;
 	TIMSK |= (1 << TOIE1);
+
+	// USB Poll with Timer2 (16Bit)
+	TCCR2A = 0x00;
+	TCCR2B = (1 << CS20); // prescale = 0
+	TCNT2 = USB_POLL_TCNT_START;
+	TIMSK |= (1 << TOIE2);
 
 	_delay_ms(1);
 	sei();
@@ -411,6 +417,13 @@ ISR( TIMER1_OVF_vect )
 {
 	TCNT1 = USB_POLL_TCNT_START;
 	usbPoll();
+}
+
+/* ------------------------------------------------------------------------- */
+// Interruptroutine
+ISR( TIMER2_OVF_vect )
+{
+    
 }
 
 /* ------------------------------------------------------------------------- */

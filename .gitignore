@@ -3,3 +3,4 @@ Entwuerfe
 firmware/.dep
 *.lst
 *.o
+hidtool
