@@ -341,7 +341,7 @@ void init(void)
 	// Timer2 (8Bit)
 	TCCR2  = 0x00;
 	TCCR2 |= (1 << WGM21); // CTC
-	TCCR2 |= (1 << CS22) | (1 << CS01); // prescale = 1024
+	TCCR2 |= (1 << CS22) | (1 << CS20); // prescale = 1024
 	TCNT2 = 1;
     OCR2 = 125; // Ergibt genau 0,008 Sekunden
 	TIMSK |= (1 << OCIE2);
@@ -377,29 +377,29 @@ void usbReset( void )
 /* ------------------------------------------------------------------------- */
 usbMsgLen_t usbFunctionSetup(uchar data[8])
 {
-        usbRequest_t    *rq = (void *)data;
+    usbRequest_t    *rq = (void *)data;
 
-        if ( (rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS)
+    if ( (rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS)
 	{    // HID class request
-                if(rq->bRequest == USBRQ_HID_GET_REPORT)
+		if(rq->bRequest == USBRQ_HID_GET_REPORT)
 		{  // wValue: ReportType (highbyte), ReportID (lowbyte)
                         // since we have only one report type, we can ignore the report-ID
-                        bytesRemaining = 64;
-                        usbMsgPtr = &container;
-                        return USB_NO_MSG;  // use usbFunctionRead() to obtain data
-                }
+             bytesRemaining = 64;
+             usbMsgPtr = &container;
+             return USB_NO_MSG;  // use usbFunctionRead() to obtain data
+        }
 		else if (rq->bRequest == USBRQ_HID_SET_REPORT)
 		{
-                        // since we have only one report type, we can ignore the report-ID
-                        bytesRemaining = 64;
-                        return USB_NO_MSG;  // use usbFunctionWrite() to receive data from host
-                }
+             // since we have only one report type, we can ignore the report-ID
+             bytesRemaining = 64;
+             return USB_NO_MSG;  // use usbFunctionWrite() to receive data from host
         }
+    }
 	else
 	{
         	// ignore vendor type requests, we don't use any
-        }
-        return 0;
+    }
+    return 0;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -414,6 +414,8 @@ ISR( TIMER1_OVF_vect )
 // Interruptroutine
 ISR( TIMER2_COMP_vect )
 {
+    seconds_timer_cnt++;
+
     if (seconds_timer_cnt >= 125)
     {
         seconds_timer_cnt = 0;
@@ -442,7 +444,8 @@ void playAnimationen(uchar* maske_, uchar* aenderungen_, uchar frames_)
 	while ( playAnimation )
 	{		
 		for( i = 0; i < 8; i++ )
-		{	tmpMaske = pgm_read_byte(&maske_[frames_counter * 8 + i]);
+		{
+			tmpMaske = pgm_read_byte(&maske_[frames_counter * 8 + i]);
  
 			if(tmpMaske > 0)
 			{

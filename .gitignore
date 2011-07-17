@@ -3,4 +3,6 @@ Entwuerfe
 firmware/.dep
 *.lst
 *.o
+firmware/*.hex
+firmware/*.elf
 hidtool
