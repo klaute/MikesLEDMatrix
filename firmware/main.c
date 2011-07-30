@@ -341,7 +341,7 @@ void init(void)
 	// Timer2 (8Bit)
 	TCCR2  = 0x00;
 	TCCR2 |= (1 << WGM21); // CTC
-	TCCR2 |= (1 << CS22) | (1 << CS20); // prescale = 1024
+	TCCR2 |= (1 << CS22) | (1 << CS21) | (1 << CS20); // prescale = 1024
 	TCNT2 = 1;
     OCR2 = 125; // Ergibt genau 0,008 Sekunden
 	TIMSK |= (1 << OCIE2);
