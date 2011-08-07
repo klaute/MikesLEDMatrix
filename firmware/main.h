@@ -67,10 +67,16 @@ static Cont_t container;
 static uchar frames;
 static uchar frames_counter;
 static uchar aenderungen_counter;
-//static uchar aenderungen_gesammt;
-//static uchar prozent;
-//static uchar aenderungen[1536];
+static uchar sekunden;
+static uchar minuten;
+static uchar stunden;
+uchar* ptrSekunden;
+uchar* ptrMinuten;
+uchar* ptrStunden;
+
 static bool playAnimation;
+static bool boolPlayFloatingText;
+static bool showTime;
 
 void init(void);
 void usbReset(void);
@@ -78,6 +84,8 @@ void usbReset(void);
 void start_animation(void);
 //void play_animation(void);
 void playAnimationen(uchar*, uchar*, uchar);
+void playFloatingText();
+
 
 //void show_Prozent(uchar);
 //void animation_invaders(void);

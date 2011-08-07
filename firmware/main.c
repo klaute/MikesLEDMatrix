@@ -147,7 +147,8 @@ int main(void)
 					playAnimationen(maske7, aendrung7,frames7);
 				break;
 				case 37 : ;
-					equalizer_7();
+					playAnimation = true;
+					playAnimationen(maske8, aendrung8,frames8);
 				break;
 				case 38 : ;
 					equalizer_8();
@@ -157,6 +158,15 @@ int main(void)
 				break;
 				case 40 : ;
 					equalizer_10();
+				break;
+				// Laufschrift zeigen
+				case 198 : ;
+					showTime = true;
+				break;
+				// Laufschrift zeigen
+				case 199 : ;
+					boolPlayFloatingText = true;
+					playFloatingText();
 				break;
 				// Startanimation zeigen
 				case 200 : ;
@@ -217,7 +227,10 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 	if(len > bytesRemaining)
 		len = bytesRemaining;
 	uchar v;
+	
 	playAnimation = false;
+	boolPlayFloatingText = false;
+	showTime = false;
 
 	switch ( container.mode )
 	{
@@ -261,11 +274,21 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 				blockEqualizerBold(container.blockValue, true);
 				bytesRemaining = 0;
 				return 1;
-			case 8 : ; // Übertragung von 24 Bytes vorbereiten 
+			case 8 : ; // Übertragung von Laufschrift vorbereiten
 				container.mode = 2;
 				bytesRemaining = 0;
 				return 1;
-			
+			case 9 : ; // Laufschrift starten
+				container.doAnimation = 199;
+				bytesRemaining = 0;
+				return 1;
+			case 10 : ; //Zeit setzen und Uhr starten
+				stunden = data[1];
+				minuten = data[2];
+				sekunden = data[3];
+				container.doAnimation = 198;
+				bytesRemaining = 0;
+				return 1;
 			default : // Keine Aktion
 				bytesRemaining = 0;
 				return 1;
@@ -288,21 +311,14 @@ uchar usbFunctionWrite(uchar *data, uchar len)
         case 2 : ; // read blockValue for blockequalizer
 		    pos = ( 64 - bytesRemaining );
     		i = 0;
-    		if( pos < 17 )
+    		for ( i = 0; i < len; i++ )
     		{
-    			//bzero(container.blockValue, sizeof(container.blockValue));
-    			memset(container.blockValue, 255, sizeof(container.blockValue));
-    			for ( i = 0; i < len; i++ )
-    			{
-    				container.blockValue[ pos + i ] = data[i];
-    			}
-    			//blockEqualizer(container.blockValue);
+			bufferLauftext[pos+i] = data[i];
     		}
 
-    		if ( bytesRemaining == 48)
+    		if ( bytesRemaining == 8)
     		{
     			container.mode  = 0;
-                bytesRemaining = 8;
 	    	}
 	        break;
 	    
@@ -357,6 +373,10 @@ void init(void)
 	qBlock[5] = 0;
 	qBlock[6] = 0;
 	falldown = 1;
+	sekunden = 0;
+	minuten = 0;
+	stunden = 0;
+	showTime = false;
 }	
 
 /* ------------------------------------------------------------------------- */
@@ -419,14 +439,129 @@ ISR( TIMER2_COMP_vect )
     if (seconds_timer_cnt >= 125)
     {
         seconds_timer_cnt = 0;
+	if( showTime )
+	{
+	uchar m;
+	if(sekunden == 0) cube_clear();
 
-        // Start the action which should be triggered every second.
-        if (cube[0][0] == 0x00) {
-            cube[0][0] = 0x12;
-        } else {
-            cube[0][0] = 0x00;
-        }
+	if(minuten < 60)
+	{
+		m = minuten - (minuten/10 * 10);
+		ptrMinuten = (const uchar*) pgm_read_word(&minuten_einer[m]);
+		cube[2][5] = pgm_read_byte(ptrMinuten);
+		cube[2][6] = pgm_read_byte(ptrMinuten+1);
+		cube[2][7] = pgm_read_byte(ptrMinuten+2);
+		cube[5][0] = pgm_read_byte(ptrMinuten+3);
+		
+		m = minuten/10;
+		ptrMinuten = (const uchar*) pgm_read_word(&minuten_einer[m]);
+		cube[5][3] = pgm_read_byte(ptrMinuten);
+		cube[5][4] = pgm_read_byte(ptrMinuten+1);
+		cube[5][5] = pgm_read_byte(ptrMinuten+2);
+		cube[5][6] = pgm_read_byte(ptrMinuten+3);
+	}
+	
+	if(stunden < 24)
+	{
+		m = stunden - (stunden/10 * 10);
+		ptrMinuten = (const uchar*) pgm_read_word(&minuten_einer[m]);
+		cube[0][5] = pgm_read_byte(ptrMinuten) << 2;
+		cube[1][5] |= pgm_read_byte(ptrMinuten) >> 6;
+		cube[0][6] = pgm_read_byte(ptrMinuten+1) << 2;
+		cube[1][6] |= pgm_read_byte(ptrMinuten+1) >> 6;
+		cube[0][7] = pgm_read_byte(ptrMinuten+2) << 2;
+		cube[1][7] |= pgm_read_byte(ptrMinuten+2) >> 6;
+		cube[3][0] = pgm_read_byte(ptrMinuten+3) << 2;
+		cube[4][0] |= pgm_read_byte(ptrMinuten+3) >> 6;
 
+		m = stunden/10;
+		ptrMinuten = (const uchar*) pgm_read_word(&minuten_einer[m]);
+		cube[3][3] = pgm_read_byte(ptrMinuten) << 2;
+		cube[4][3] |= pgm_read_byte(ptrMinuten) >> 6;
+		cube[3][4] = pgm_read_byte(ptrMinuten+1) << 2;
+		cube[4][4] |= pgm_read_byte(ptrMinuten+1) >> 6;
+		cube[3][5] = pgm_read_byte(ptrMinuten+2) << 2;
+		cube[4][5] |= pgm_read_byte(ptrMinuten+2) >> 6;
+		cube[3][6] = pgm_read_byte(ptrMinuten+3) << 2;
+		cube[4][6] |= pgm_read_byte(ptrMinuten+3) >> 6;
+	}
+
+	if(sekunden == 1) cube[6][7] = 8;
+	if(sekunden == 2) cube[6][7] = 24;
+	if(sekunden == 3) cube[6][7] = 56;
+	if(sekunden == 4) cube[6][6] = 8;
+	if(sekunden == 5) cube[6][6] = 24;
+	if(sekunden == 6) cube[6][6] = 56;
+	if(sekunden == 7) cube[6][5] = 8;
+	if(sekunden == 8) cube[6][5] = 24;
+	if(sekunden == 9) cube[6][5] = 56;
+	if(sekunden == 10) cube[6][4] = 8;
+	if(sekunden == 11) cube[6][4] = 24;
+	if(sekunden == 12) cube[6][4] = 56;
+
+	if(sekunden == 13) cube[4][7] |= 8;
+	if(sekunden == 14) cube[4][7] |= 24;
+	if(sekunden == 15) cube[4][7] |= 56;
+	if(sekunden == 16) cube[4][6] |= 8;
+	if(sekunden == 17) cube[4][6] |= 24;
+	if(sekunden == 18) cube[4][6] |= 56;
+	if(sekunden == 19) cube[4][5] |= 8;
+	if(sekunden == 20) cube[4][5] |= 24;
+	if(sekunden == 21) cube[4][5] |= 56;
+	if(sekunden == 22) cube[4][4] |= 8;
+	if(sekunden == 23) cube[4][4] |= 24;
+	if(sekunden == 24) cube[4][4] |= 56;
+	if(sekunden == 25) cube[4][3] |= 8;
+	if(sekunden == 26) cube[4][3] |= 24;
+	if(sekunden == 27) cube[4][3] |= 56;
+	if(sekunden == 28) cube[4][2] = 8;
+	if(sekunden == 29) cube[4][2] = 24;
+	if(sekunden == 30) cube[4][2] = 56;
+	if(sekunden == 31) cube[4][1] = 8;
+	if(sekunden == 32) cube[4][1] = 24;
+	if(sekunden == 33) cube[4][1] = 56;
+	if(sekunden == 34) cube[4][0] |= 8;
+	if(sekunden == 35) cube[4][0] |= 24;
+	if(sekunden == 36) cube[4][0] |= 56;
+
+	if(sekunden == 37) cube[1][7] |= 8;
+	if(sekunden == 38) cube[1][7] |= 24;
+	if(sekunden == 39) cube[1][7] |= 56;
+	if(sekunden == 40) cube[1][6] |= 8;
+	if(sekunden == 41) cube[1][6] |= 24;
+	if(sekunden == 42) cube[1][6] |= 56;
+	if(sekunden == 43) cube[1][5] |= 8;
+	if(sekunden == 44) cube[1][5] |= 24;
+	if(sekunden == 45) cube[1][5] |= 56;
+	if(sekunden == 46) cube[1][4] = 8;
+	if(sekunden == 47) cube[1][4] = 24;
+	if(sekunden == 48) cube[1][4] = 56;
+	if(sekunden == 49) cube[1][3] = 8;
+	if(sekunden == 50) cube[1][3] = 24;
+	if(sekunden == 51) cube[1][3] = 56;
+	if(sekunden == 52) cube[1][2] = 8;
+	if(sekunden == 53) cube[1][2] = 24;
+	if(sekunden == 54) cube[1][2] = 56;
+	if(sekunden == 55) cube[1][1] = 8;
+	if(sekunden == 56) cube[1][1] = 24;
+	if(sekunden == 57) cube[1][1] = 56;
+	if(sekunden == 58) cube[1][0] = 8;
+	if(sekunden == 59) cube[1][0] = 24;
+	}
+	sekunden++;
+	if(sekunden == 60)
+	{
+		minuten++;
+		sekunden = 0;
+	}
+	
+	if(minuten == 60)
+        { 
+		minuten = 0;
+		stunden++;
+	}
+	if(stunden == 24) stunden = 0;
+	
     }
 }
 
@@ -469,6 +604,61 @@ void playAnimationen(uchar* maske_, uchar* aenderungen_, uchar frames_)
 			cube_clear();
 		}
 				
+	}
+	cube_clear();
+}
+
+void playFloatingText()
+{
+	uchar *ptrToArray;
+	uchar laenge;
+	uchar a;
+	uchar b;
+	uchar c;
+	int counter1 = 20;
+	bzero(laufText, sizeof(laufText));
+	c = 0;
+	for(a = 0; a< 64; a++)
+	{
+		ptrToArray = (const uchar*) pgm_read_word (&buchstaben[bufferLauftext[a]]);
+		laenge =  pgm_read_byte (ptrToArray);
+		if(c < 3){
+		for(b = 1; b < laenge; b++)
+		{
+			laufText[counter1] = pgm_read_byte (ptrToArray+b);
+			counter1++;
+		}
+		if(bufferLauftext[a] == 26)
+			c++;
+		else
+			c = 0;
+		}
+	}
+	//ende markieren
+	b = counter1;
+	//ende sollte nicht grösser als 360 sein
+	if(b > 360) b = 360;
+
+	counter1 = 0;
+	
+	while(boolPlayFloatingText)
+	{
+		cube[6][7] = laufText[counter1];
+		cube[6][6] = laufText[counter1+1];
+		cube[6][5] = laufText[counter1+2];
+		cube[6][4] = laufText[counter1+3];
+		for(a = 0; a < 8; a++)
+		{
+			cube[4][7-a] = laufText[counter1+4+a];
+		}
+		for(a = 0; a < 8; a++)
+		{
+			cube[1][7-a] = laufText[counter1+12+a];
+		}
+		cube_show_loop(10);
+		counter1++;
+		if(counter1 > b-1) counter1 = 0;
+	
 	}
 	cube_clear();
 }
