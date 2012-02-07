@@ -26,11 +26,11 @@ section at the end of this file).
 
 /* ---------------------------- Hardware Config ---------------------------- */
 
-#define USB_CFG_IOPORTNAME      B
+#define USB_CFG_IOPORTNAME      D
 /* This is the port where the USB bus is connected. When you configure it to
  * "B", the registers PORTB, PINB and DDRB will be used.
  */
-#define USB_CFG_DMINUS_BIT      1
+#define USB_CFG_DMINUS_BIT      3
 /* This is the bit number in USB_CFG_IOPORT where the USB D- line is connected.
  * This may be any bit in the port.
  */
@@ -364,9 +364,9 @@ section at the end of this file).
 /* #define USB_INTR_CFG_SET        ((1 << ISC00) | (1 << ISC01)) */
 /* #define USB_INTR_CFG_CLR        0 */
 /* #define USB_INTR_ENABLE         GIMSK */
-#define USB_INTR_ENABLE_BIT     INT2
+//#define USB_INTR_ENABLE_BIT     INT2
 /* #define USB_INTR_PENDING        GIFR */
-#define USB_INTR_PENDING_BIT    INTF2
-#define USB_INTR_VECTOR         SIG_INTERRUPT2
+//#define USB_INTR_PENDING_BIT    INTF2
+//#define USB_INTR_VECTOR         SIG_INTERRUPT2
 
 #endif /* __usbconfig_h_included__ */
