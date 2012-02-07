@@ -141,7 +141,7 @@ these macros are defined, the boot loader usees them.
 
 #ifndef __ASSEMBLER__   /* assembler cannot parse function definitions */
 
-#define JUMPER_BIT  PB0   /* jumper is connected to this bit in port D, active low. If not required uncomment it. */
+#define JUMPER_BIT  PD7   /* jumper is connected to this bit in port D, active low. If not required uncomment it. */
 
 #ifndef MCUCSR          /* compatibility between ATMega8 and ATMega88 */
 #   define MCUCSR   MCUSR
@@ -191,4 +191,5 @@ static inline void  bootLoaderExit(void)
 /* ------------------------------------------------------------------------- */
 
 #endif
+
 
