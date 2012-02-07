@@ -207,10 +207,10 @@ the newest features and options.
 /* #define USB_INTR_CFG_SET        ((1 << ISC00) | (1 << ISC01)) */
 /* #define USB_INTR_CFG_CLR        0 */
 /* #define USB_INTR_ENABLE         GIMSK */
-#define USB_INTR_ENABLE_BIT     INT2
+//#define USB_INTR_ENABLE_BIT     INT2
 /* #define USB_INTR_PENDING        GIFR */
-#define USB_INTR_PENDING_BIT    INTF2
-#define USB_INTR_VECTOR         SIG_INTERRUPT2
+//#define USB_INTR_PENDING_BIT    INTF2
+//#define USB_INTR_VECTOR         SIG_INTERRUPT2
 
 #endif /* __usbconfig_h_included__ */
 
