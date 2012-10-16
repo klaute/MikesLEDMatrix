@@ -12,12 +12,12 @@ DEVICE  = atmega32
 F_CPU   = 16000000	# in Hz
 FUSE_L  = # see below for fuse values for particular devices
 FUSE_H  =
-#AVRDUDE = avrdude -c avrisp2 -p $(DEVICE) -P /dev/ttyUSB0 # edit this line for your programmer
-AVRDUDE = avrdude -c usbasp -p $(DEVICE) # edit this line for your programmer
+AVRDUDE = avrdude -c avrisp2 -p $(DEVICE) -P /dev/ttyUSB0 # edit this line for your programmer
+#AVRDUDE = avrdude -c usbasp -p $(DEVICE) # edit this line for your programmer
 
-CFLAGS  = -Iusbdrv
+#CFLAGS  = -Iusbdrv
 CFLAGS += -I.
-CFLAGS += -I/home/klaute/dev/avrlib
+#CFLAGS += -I/home/klaute/dev/avrlib
 CFLAGS += -DDEBUG_LEVEL=0
 CFLAGS += -MD -MP -MF .dep/$(@F).d
 CFLAGS += -ffunction-sections
@@ -27,7 +27,8 @@ CFLAGS += -Wl,--gc-sections
 AVRSIZE = avr-size
 
 #OBJECTS = main.o ledcube.o block0.o animations.o ab.o rotation.o translation.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
-OBJECTS = main.o ledcube.o blockeq.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
+#OBJECTS = main.o ledcube.o blockeq.o equalizer.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o uart.o
+OBJECTS = main.o ledcube.o blockeq.o equalizer.o uart.o
 
 COMPILE  = avr-gcc
 COMPILE += -Wall
@@ -43,7 +44,7 @@ COMPILE += -fgnu89-inline
 COMPILE += -Wstrict-prototypes
 COMPILE += -mtiny-stack
 COMPILE += -mcall-prologues
-COMPILE += -mno-tablejump
+#COMPILE += -mno-tablejump
 
 all: program 
 #writeeep

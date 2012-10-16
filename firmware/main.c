@@ -36,6 +36,7 @@ int main(void)
 	while ( 1 )
 	{	
 
+        uart_puts("hallo welt");
 		//usbPoll(); // Wird per Timer aufgerufen...
 		if ( container.doAnimation != 0 )
 		{
@@ -190,6 +191,7 @@ int main(void)
 /* usbFunctionRead() is called when the host requests a chunk of data from
  * the device. For more information see the documentation in usbdrv/usbdrv.h.
  */
+/*
 uchar usbFunctionRead(uchar *data, uchar len)
 {
 	if (len > bytesRemaining)
@@ -215,11 +217,13 @@ uchar usbFunctionRead(uchar *data, uchar len)
 
 	return len;
 }
+*/
 
 /* ------------------------------------------------------------------------- */
 /* usbFunctionWrite() is called when the host sends a chunk of data to the
  * device. For more information see the documentation in usbdrv/usbdrv.h.
  */
+/*
 uchar usbFunctionWrite(uchar *data, uchar len)
 {
 	if(bytesRemaining == 0)
@@ -327,6 +331,7 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 	bytesRemaining -= len;
 	return bytesRemaining == 0; // return 1 if this was the last chunk 
 }
+*/
 
 /* ------------------------------------------------------------------------- */
 void init(void)
@@ -345,8 +350,8 @@ void init(void)
 
 	cube_show_init();
 
-	usbInit();
-	usbReset();
+	//usbInit();
+	//usbReset();
 
 	// USB Poll with Timer1 (16Bit)
 	TCCR1A = 0x00;
@@ -377,10 +382,13 @@ void init(void)
 	minuten = 0;
 	stunden = 0;
 	showTime = false;
+
+    uart_init(19200);
 }	
 
 /* ------------------------------------------------------------------------- */
 /* Simulieren eines USB disconnect */
+/*
 void usbReset( void )
 {
         usbDeviceDisconnect();
@@ -393,8 +401,10 @@ void usbReset( void )
 
         usbDeviceConnect();
 }
+*/
 
 /* ------------------------------------------------------------------------- */
+/*
 usbMsgLen_t usbFunctionSetup(uchar data[8])
 {
     usbRequest_t    *rq = (void *)data;
@@ -421,13 +431,14 @@ usbMsgLen_t usbFunctionSetup(uchar data[8])
     }
     return 0;
 }
+*/
 
 /* ------------------------------------------------------------------------- */
 // Interruptroutine
 ISR( TIMER1_OVF_vect )
 {
 	TCNT1 = USB_POLL_TCNT_START;
-	usbPoll();
+	//usbPoll();
 }
 
 /* ------------------------------------------------------------------------- */

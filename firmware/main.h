@@ -31,12 +31,15 @@ You should have received a copy of the GNU General Public License along with thi
 #include "blockeq.h"
 //#include "invaders.h"
 
-#include "usbdrv.h"
+//#include "usbdrv.h"
+
+#include "uart.h"
 
 //#define USB_POLL_TCNT_START 40000 // ASROCK Rechner
 #define USB_POLL_TCNT_START 25000 // Notebooks
 
-PROGMEM char usbHidReportDescriptor[22] = {    /* USB report descriptor */
+/*
+PROGMEM char usbHidReportDescriptor[22] = {    // USB report descriptor
     0x06, 0x00, 0xff,              // USAGE_PAGE (Generic Desktop)
     0x09, 0x01,                    // USAGE (Vendor Usage 1)
     0xa1, 0x01,                    // COLLECTION (Application)
@@ -48,6 +51,7 @@ PROGMEM char usbHidReportDescriptor[22] = {    /* USB report descriptor */
     0xb2, 0x02, 0x01,              //   FEATURE (Data,Var,Abs,Buf)
     0xc0                           // END_COLLECTION
 };
+*/
 
 volatile uint8_t seconds_timer_cnt;
 
@@ -90,7 +94,7 @@ void playFloatingText();
 //void show_Prozent(uchar);
 //void animation_invaders(void);
 
-usbMsgLen_t usbFunctionSetup(uchar[]);
-uchar usbFunctionWrite(uchar*, uchar);
-uchar usbFunctionRead(uchar*, uchar);
+//usbMsgLen_t usbFunctionSetup(uchar[]);
+//uchar usbFunctionWrite(uchar*, uchar);
+//uchar usbFunctionRead(uchar*, uchar);
 
