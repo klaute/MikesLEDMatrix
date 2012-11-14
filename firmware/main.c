@@ -383,7 +383,8 @@ void init(void)
 	stunden = 0;
 	showTime = false;
 
-    uart_init(19200);
+    uart_init(UART_BAUD_SELECT(BAUDRATE, F_CPU));
+
 }	
 
 /* ------------------------------------------------------------------------- */

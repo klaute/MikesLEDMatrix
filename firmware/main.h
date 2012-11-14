@@ -25,6 +25,8 @@ You should have received a copy of the GNU General Public License along with thi
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
 
+#include "globals.h"
+
 #include "ledcube.h"
 
 #include "equalizer.h"

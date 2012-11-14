@@ -42,19 +42,19 @@ ISR( TIMER0_OVF_vect )
 
 	TCNT0 = 0xB0; // at least 0xA0
 	// cli() not neccessary atm
-	PORTC = 0x0; // Ebene abschalten
+	GND_PORT = 0x00; // Ebene abschalten
 	static uint8_t cube_show_layer = 0;
 	asm volatile("nop");
 	uint8_t j;
 	for(j = 0; j < 8; j++){ // Schleife über alle Ebenen
-		PORTD = cube[cube_show_layer][j]; // 8 Bit der aktuellen Ebene übertragen
+		LINE_PORT = cube[cube_show_layer][j]; // 8 Bit der aktuellen Ebene übertragen
 		asm volatile("nop");
-		PORTA |= (1 << j); // Aktuell angelegte Daten der Ebenen laden per Load
+		ENABLE_PORT |= (1 << j); // Aktuell angelegte Daten der Ebenen laden per Load
 		asm volatile("nop");
-		PORTA = 0; // Fallende Flanke am Load-Pin
+		ENABLE_PORT = 0; // Fallende Flanke am Load-Pin
 		asm volatile("nop");
 	}
-	PORTC |= (1 << cube_show_layer); // Nächste Ebene einschalten
+	GND_PORT |= (1 << cube_show_layer); // Nächste Ebene einschalten
 	asm volatile("nop");
 	if (cube_show_layer < 7) { // Beim nächsten Interrupt die nächste Ebene anzeigen
 		cube_show_layer++;
@@ -180,16 +180,16 @@ void cube_show( void )
 	for (i = 0; i < 8; i++){
 		uint8_t j;
 		for(j = 0; j < 8; j++){
-			PORTD = cube[i][j];
+			LINE_PORT = cube[i][j];
 			asm volatile("nop");
-			PORTA |= (1 << j);
+			ENABLE_PORT |= (1 << j);
 			asm volatile("nop");
-			PORTA = 0;
+			ENABLE_PORT = 0;
 			asm volatile("nop");
 		}
-		PORTC |= (1 << i);
+		GND_PORT |= (1 << i);
 		_delay_ms(1);
-		PORTC = 0x0;
+		GND_PORT = 0x00;
 		asm volatile("nop");
 	}
 }

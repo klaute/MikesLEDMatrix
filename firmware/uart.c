@@ -85,8 +85,13 @@ LICENSE:
  #define ATMEGA_USART
  //#define UART0_RECEIVE_INTERRUPT   SIG_UART_RECV
  //#define UART0_TRANSMIT_INTERRUPT  SIG_UART_DATA
- #define UART0_RECEIVE_INTERRUPT   SIG_UART_RECVRT_RX_vect 
- #define UART0_TRANSMIT_INTERRUPT  SIG_UART_DATART_UDRE_vect 
+ //#define UART0_RECEIVE_INTERRUPT   SIG_UART_RECVRT_RX_vect 
+ //#define UART0_TRANSMIT_INTERRUPT  SIG_UART_DATART_UDRE_vect 
+ //#define UART0_RECEIVE_INTERRUPT   SIG_USART_RECV
+ //#define UART0_TRANSMIT_INTERRUPT  SIG_USART_DATA
+ #define UART0_RECEIVE_INTERRUPT   USART_RXC_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
+ 
  #define UART0_STATUS   UCSRA
  #define UART0_CONTROL  UCSRB
  #define UART0_DATA     UDR
@@ -319,6 +324,7 @@ Returns:  none
 **************************************************************************/
 void uart_init(unsigned int baudrate)
 {
+    // TODO
     UART_TxHead = 0;
     UART_TxTail = 0;
     UART_RxHead = 0;
